@@ -10,6 +10,7 @@
 import XMonad
 import Data.Monoid
 import System.Exit
+import XMonad.Actions.SpawnOn
 import XMonad.Actions.Plane
 
 import qualified XMonad.StackSet as W
@@ -40,7 +41,7 @@ myBorderWidth   = 1
 -- for test
 -- myModMask       = mod1Mask
 -- for real
-   myModMask       = mod4Mask  
+myModMask       = mod4Mask  
 
 -- The default number of workspaces (virtual screens) and their names.
 -- By default we use numeric strings, but any string may be used as a
@@ -55,7 +56,7 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 
 -- Border colors for unfocused and focused windows, respectively.
 --
-myNormalBorderColor  = "#dddddd"
+myNormalBorderColor  = "#222222"
 myFocusedBorderColor = "#ff0000"
 
 ------------------------------------------------------------------------
@@ -77,6 +78,7 @@ numKeys =
     , xK_0, xK_minus, xK_equal
   ]
 
+
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- launch a terminal
@@ -86,8 +88,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_p     ), spawn "synapse")
 
     -- launch gmrun
-    , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
+    , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")      
 
+    -- launch gmrun
+--    , ((modm,               xK_i     ), spawnOn "6" "emacs")
+    , ((modm,               xK_i     ), spawn  "emacs-snapshot")
+      
     -- close focused window
     , ((modm .|. shiftMask, xK_c     ), kill)
 
@@ -155,7 +161,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     --
     -- mod-num, switch to different workspaces
-    -- mod-arrow, send windows to different workspaces
+    -- mod-arrow, Switch to neighbor workspaces 
     --
     [
       ((m .|. myModMask, k), windows $ f i)
@@ -168,14 +174,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
        , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]] ++
 
     M.toList (planeKeys myModMask (Lines 4) Finite) ++
-
     [
     ((m .|. myModMask, key), screenWorkspace sc
       >>= flip whenJust (windows . f))
       | (key, sc) <- zip [xK_w, xK_e, xK_r] [1,0,2]
-      , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
+      , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]] 
 
-    
+
 ------------------------------------------------------------------------
 -- Mouse bindings: default actions bound to mouse events
 --
