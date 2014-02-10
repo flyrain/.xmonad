@@ -18,7 +18,6 @@ import qualified Data.Map        as M
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
--- myTerminal      = "xterm"
 myTerminal      = "gnome-terminal"
 
 -- Whether focus follows the mouse pointer.
@@ -38,9 +37,9 @@ myBorderWidth   = 1
 -- ("right alt"), which does not conflict with emacs keybindings. The
 -- "windows key" is usually mod4Mask.
 --
-
 -- for test
--- myModMask       = mod1Mask  
+-- myModMask       = mod1Mask
+-- for real
    myModMask       = mod4Mask  
 
 -- The default number of workspaces (virtual screens) and their names.
@@ -84,7 +83,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- launch dmenu
-    , ((modm,               xK_p     ), spawn "dmenu_run")
+    , ((modm,               xK_p     ), spawn "synapse")
 
     -- launch gmrun
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
@@ -155,25 +154,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     ++
 
     --
-    -- mod-[1..9], Switch to workspace N
-    -- mod-shift-[1..9], Move client to workspace N
-    --
---    [((m .|. modm, k), windows $ f i)
---        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
---        , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
---    ++
-
-    --
-    -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
-    -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
-    --
---    [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
---        | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
---        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
-
---    ++
-
-    --
+    -- mod-num, switch to different workspaces
     -- mod-arrow, send windows to different workspaces
     --
     [
