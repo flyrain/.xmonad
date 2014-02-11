@@ -1,8 +1,12 @@
 #!/bin/bash
-#gtk setting, could be modified by lxappearance 
-export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
-xrdb -merge .Xresources
+#start gnome
+gnome-settings-daemon &
+
+#gtk setting, could be modified by lxappearance 
+#export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
+
+#xrdb -merge .Xresources
 
 #backgroud image setting
 nitrogen --restore &
@@ -10,8 +14,14 @@ nitrogen --restore &
 #start dropbox 
 dropbox start &
 
-# Remap caps lock to left control
-setxkbmap -option 'ctrl:nocaps'
+#start synapse 
+synapse &
+
+#start emacs
+emacs-snapshot &
+
+# Remap caps lock to left control, it is no need because of gnome-setting-daemon.
+#setxkbmap -option 'ctrl:nocaps'
 
 # start xmonad
 exec .cabal/bin/xmonad
