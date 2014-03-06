@@ -13,6 +13,8 @@ Installation
 
     sudo cp xmonad.desktop /usr/share/xsessions/
 
+    sudo cp custom_xmonad_badge.png /usr/share/unity_greeter
+
 
 Dependent packages install
 ------
