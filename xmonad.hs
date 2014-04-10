@@ -12,6 +12,15 @@ import Data.Monoid
 import System.Exit
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.Plane
+import XMonad.Layout.Fullscreen 
+import XMonad.Layout.Grid
+import XMonad.Layout.Circle
+import XMonad.Layout.NoBorders
+import XMonad.Prompt
+import XMonad.Prompt.Layout
+import XMonad.Hooks.DynamicLog
+import XMonad.Util.Run
+import XMonad.Actions.Plane
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
@@ -90,15 +99,20 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- launch gmrun
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")      
 
-    -- launch gmrun
---    , ((modm,               xK_i     ), spawnOn "6" "emacs")
+    -- launch emacs
     , ((modm,               xK_i     ), spawn  "emacs-snapshot")
       
     -- close focused window
     , ((modm .|. shiftMask, xK_c     ), kill)
 
-     -- Rotate through the available layout algorithms
+    -- Rotate through the available layout algorithms
     , ((modm,               xK_space ), sendMessage NextLayout)
+
+    -- show layout name 
+    --, ((modm,               xK_f ), layoutPrompt defaultXPConfig)
+
+    -- Goto first layout 
+    , ((modm,               xK_f ), sendMessage FirstLayout)
 
     --  Reset the layouts on the current workspace to default
     , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
@@ -211,7 +225,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = tiled ||| Mirror tiled ||| Full
+myLayout = noBorders Full ||| tiled ||| Mirror tiled ||| Grid
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -255,7 +269,8 @@ myManageHook = composeAll
 -- return (All True) if the default handler is to be run afterwards. To
 -- combine event hooks use mappend or mconcat from Data.Monoid.
 --
-myEventHook = mempty
+--myEventHook = mempty
+myEventHook = fullscreenEventHook 
 
 ------------------------------------------------------------------------
 -- Status bars and logging
@@ -280,7 +295,9 @@ myStartupHook = return ()
 
 -- Run xmonad with the settings you specify. No need to modify this.
 --
-main = xmonad defaults
+main = do
+  xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc"
+  xmonad defaults
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will
