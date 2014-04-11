@@ -16,6 +16,7 @@ import XMonad.Layout.Fullscreen
 import XMonad.Layout.Grid
 import XMonad.Layout.Circle
 import XMonad.Layout.NoBorders
+import XMonad.Layout.Tabbed
 import XMonad.Prompt
 import XMonad.Prompt.Layout
 import XMonad.Hooks.DynamicLog
@@ -92,12 +93,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- launch a terminal
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
-
-    -- launch dmenu
-    , ((modm,               xK_p     ), spawn "dmenu")
-
-    -- launch gmrun
-    , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")      
 
     -- launch emacs
     , ((modm,               xK_i     ), spawn  "emacs-snapshot")
@@ -225,7 +220,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = noBorders Full ||| tiled ||| Mirror tiled ||| Grid
+myLayout = noBorders Full ||| tiled ||| Mirror tiled ||| simpleTabbed
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
