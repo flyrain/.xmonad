@@ -22,6 +22,7 @@ import XMonad.Prompt.Layout
 import XMonad.Hooks.DynamicLog
 import XMonad.Util.Run
 import XMonad.Actions.Plane
+import XMonad.Hooks.ManageDocks
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
@@ -62,7 +63,7 @@ myModMask       = mod4Mask
 --
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+myWorkspaces    = ["7:Mail","8","9","4","5","6","1:Work","2","3"]
 
 -- Border colors for unfocused and focused windows, respectively.
 --
@@ -220,7 +221,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = noBorders Full ||| tiled ||| Mirror tiled ||| simpleTabbed
+myLayout = avoidStruts ( noBorders Full ||| tiled ||| Mirror tiled ||| simpleTabbed)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -273,7 +274,9 @@ myEventHook = fullscreenEventHook
 -- Perform an arbitrary action on each internal state change or X event.
 -- See the 'XMonad.Hooks.DynamicLog' extension for examples.
 --
-myLogHook = return ()
+myLogHook dest = dynamicLogWithPP defaultPP { ppOutput = hPutStrLn dest,
+                                              ppVisible = wrap "(" ")"
+                                            }
 
 ------------------------------------------------------------------------
 -- Startup hook
@@ -292,15 +295,7 @@ myStartupHook = return ()
 --
 main = do
   xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc"
-  xmonad defaults
-
--- A structure containing your configuration settings, overriding
--- fields in the default config. Any you don't override, will
--- use the defaults defined in xmonad/XMonad/Config.hs
---
--- No need to modify this.
---
-defaults = defaultConfig {
+  xmonad defaultConfig {
       -- simple stuff
         terminal           = myTerminal,
         focusFollowsMouse  = myFocusFollowsMouse,
@@ -319,6 +314,6 @@ defaults = defaultConfig {
         layoutHook         = myLayout,
         manageHook         = myManageHook,
         handleEventHook    = myEventHook,
-        logHook            = myLogHook,
+        logHook            = myLogHook xmproc,
         startupHook        = myStartupHook
     }
